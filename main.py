@@ -38,7 +38,7 @@ def algoritmo_prim(grafo):
 
     agm_arestas = [(parent[i], i, grafo[parent[i]][i]) for i in range(1, num_vertices)]
     custo_total = sum(p for _, _, p in agm_arestas)
-    print("AGM construída!\n")
+    print("AGM construída!")
     return agm_arestas, custo_total
 
 # -----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ def encontrar_emparelhamento_perfeito(vertices_impares, grafo_original):
     emparelhamento_nx = nx.min_weight_matching(subgrafo)
     arestas_emparelhamento = [(u, v, grafo_original[u][v]) for u, v in emparelhamento_nx]
     custo_emparelhamento = sum(p for _, _, p in arestas_emparelhamento)
-    print("Emparelhamento encontrado!\n")
+    print("Emparelhamento encontrado!")
     return arestas_emparelhamento, custo_emparelhamento
 
 # -----------------------------------------------------------------------------
@@ -110,13 +110,8 @@ def encontrar_ciclo_euleriano(multigrafo_adj):
 # ETAPA VI: ATALHO (SHORTCUTTING) E CÁLCULO FINAL
 # -----------------------------------------------------------------------------
 def criar_ciclo_hamiltoniano(ciclo_euleriano, grafo_original):
-    """
-    Converte o ciclo euleriano em um ciclo hamiltoniano removendo vértices repetidos
-    e calcula o custo total do ciclo final.
-    """
     print("Iniciando a Etapa VI: Criando o Ciclo Hamiltoniano (Shortcutting)...")
     
-    # Passo 1: Remover vértices repetidos para criar o caminho hamiltoniano
     visitados = set()
     caminho_hamiltoniano = []
     for vertice in ciclo_euleriano:
@@ -124,10 +119,8 @@ def criar_ciclo_hamiltoniano(ciclo_euleriano, grafo_original):
             visitados.add(vertice)
             caminho_hamiltoniano.append(vertice)
             
-    # Passo 2: Fechar o ciclo adicionando o vértice inicial no final
     ciclo_hamiltoniano_final = caminho_hamiltoniano + [caminho_hamiltoniano[0]]
     
-    # Passo 3: Calcular o custo total do ciclo hamiltoniano
     custo_total = 0
     print("\nCalculando o custo da rota final...")
     for i in range(len(ciclo_hamiltoniano_final) - 1):
@@ -149,14 +142,22 @@ if __name__ == "__main__":
     if matriz_adjacencias:
         num_vertices_total = len(matriz_adjacencias)
 
-        # Execução de todas as etapas em sequência
-        agm, _ = algoritmo_prim(matriz_adjacencias)
-        vertices_impares = encontrar_vertices_grau_impar(agm, num_vertices_total)
-        arestas_emparelhamento, _ = encontrar_emparelhamento_perfeito(vertices_impares, matriz_adjacencias)
-        multigrafo_h = criar_multigrafo_euleriano(agm, arestas_emparelhamento, num_vertices_total)
+        agm_arestas, custo_agm = algoritmo_prim(matriz_adjacencias)
+        print(f"Arestas: {agm_arestas}")
+        print(f"Custo total da AGM: {custo_agm}\n")
+
+        vertices_impares = encontrar_vertices_grau_impar(agm_arestas, num_vertices_total)
+        
+        arestas_emparelhamento, custo_emparelhamento = encontrar_emparelhamento_perfeito(vertices_impares, matriz_adjacencias)
+        print("Novas arestas do emparelhamento:")
+        for u, v, peso in arestas_emparelhamento:
+            print(f"  Aresta: ({u}, {v}), Peso: {peso}")
+        print(f"Custo do Emparelhamento: {custo_emparelhamento}\n")
+
+        multigrafo_h = criar_multigrafo_euleriano(agm_arestas, arestas_emparelhamento, num_vertices_total)
+        
         ciclo_euleriano = encontrar_ciclo_euleriano(multigrafo_h)
         
-        # Etapa final e exibição do resultado
         ciclo_final, custo_final = criar_ciclo_hamiltoniano(ciclo_euleriano, matriz_adjacencias)
         
         print("\n" + "="*40)
