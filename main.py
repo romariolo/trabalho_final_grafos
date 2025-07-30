@@ -27,6 +27,7 @@ def ler_grafo_de_arquivo(nome_arquivo):
 def algoritmo_prim(grafo):
     """
     Constrói a Árvore Geradora Mínima (AGM) do grafo usando o algoritmo de Prim.
+    Optamos por este algorítimo, pois ele consegue computar arestas com peso negativo.
     A AGM conecta todos os vértices com o menor custo total sem formar ciclos.
     """
     print("Iniciando a Etapa I: Construção da Árvore Geradora Mínima...")
